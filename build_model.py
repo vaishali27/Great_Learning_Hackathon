@@ -13,6 +13,8 @@ from sklearn.compose import  make_column_transformer
 from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import OneHotEncoder
+import copy
+import pandas as pd
 
 model = None
 knn = KNeighborsClassifier(n_neighbors= 8 , metric = 'l1')
@@ -25,14 +27,18 @@ adaBoost = AdaBoostClassifier(n_estimators=10, learning_rate=1, random_state=1)
 
 
 def preprocess(X, y, cat) :
-    cat_ix = []
-    for c in cat:
-        cat_ix.append(X.columns.get_loc(c))
-    ct = make_column_transformer(( OneHotEncoder(), cat_ix), remainder='passthrough')
-    X = ct.fit_transform(X)
-    # label encode the target variable to have the classes 0 and 1
+    new_data = copy.deepcopy(X)
+    columns = X.columns
+    columns_data = {}
+    for column in columns:
+        if new_data[column].dtype != int:
+            columns_data[column] = new_data[column].unique()
+            for i in range(len(columns_data[column])):
+                new_data.loc[:, column][new_data[column] == columns_data[column][i]] = int(i)
+            new_data[column] = pd.to_numeric(new_data[column])
+    # print(new_data)
     y = LabelEncoder().fit_transform(y)
-    print(X.shape, y.shape)
+    X= new_data.iloc[:, 0:19]
     return X, y
 
 

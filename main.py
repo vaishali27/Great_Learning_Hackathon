@@ -148,7 +148,7 @@ def feedback_loop(request: Request):
     foreign = CreditScoreModel.column_data['foreign worker']
 
     result = "Fill above details and click on Predict"
-    return templates.TemplateResponse('home.html', context={'request': request, 'result': result, 'status': status, 'history': history, 'purpose' : purpose, 'account' : account, 'emp': emp, 'personal_status': personal_status, 'guarantors': guarantors, 'property': property, 'installments': installments, 'housing': housing, 'job': job, 'tel': tel, 'foreign': foreign})
+    return templates.TemplateResponse('feedback.html', context={'request': request, 'result': result, 'status': status, 'history': history, 'purpose' : purpose, 'account' : account, 'emp': emp, 'personal_status': personal_status, 'guarantors': guarantors, 'property': property, 'installments': installments, 'housing': housing, 'job': job, 'tel': tel, 'foreign': foreign})
 
 
 @app.post("/feedback_loop", status_code=200)
@@ -172,37 +172,21 @@ def create_model(request: Request):
 
 
 @app.post("/build_model", status_code=200)
-async def aa_method(classifier: str = Form('classifier'), target: str = Form('target'), numerical_col: list = Form(...), categorical_col: list = Form(...)):
-    print(classifier)
-    print(target)
-    print('hello')
+async def create_model(request: Request, classifier: str = Form(...), target: str = Form(...), numerical_col: list = Form(...), categorical_col: list = Form(...), credit_data_file: UploadFile = File(...)):
+    # print(classifier)
+    # print(target)
+    # print('hello')
     # print(credit_data)
-    # content_file = await credit_data_file.read()
+    content_file = await credit_data_file.read()
     # print(content_file)
-    # s = str(content_file, 'utf-8')
-    # data = io.StringIO(s)
-    # df = pd.read_csv(data, sep=",")
-    # X, y = df.drop(target, axis="columns"), df[target]
-    #
-    # result = build(classifier, X, y, numerical_col, categorical_col)
-    # return templates.TemplateResponse('feature.html', context={'result': result})
+    s = str(content_file, 'utf-8')
+    data = io.StringIO(s)
+    df = pd.read_csv(data, sep=",")
+    X, y = df.drop(target, axis="columns"), df[target]
 
-
-# @app.post("/build_model", status_code=200)
-# async def create_model(credit_data: str = Form(...), classifier: str = Form('classifier'), target: str = Form('target'), credit_data_file: UploadFile = File(...), numerical_col: list = Form(...), categorical_col: list = Form(...)):
-#     print(classifier)
-#     print(target)
-#     print('hello')
-#     print(credit_data)
-#     content_file = await credit_data_file.read()
-#     print(content_file)
-#     s = str(content_file, 'utf-8')
-#     data = io.StringIO(s)
-#     df = pd.read_csv(data, sep=",")
-#     X, y = df.drop(target, axis="columns"), df[target]
-#
-#     result = build(classifier, X, y, numerical_col, categorical_col)
-#     return templates.TemplateResponse('feature.html', context={'result': result})
+    result = build(classifier, X, y, numerical_col, categorical_col)
+    print(result)
+    return templates.TemplateResponse('feature.html', context={'request': request, 'result': result})
 
 
 if __name__ == "__main__":

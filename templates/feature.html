@@ -11,7 +11,7 @@
 <div class="ui container">
 <h2>Predict Credit score</h2>
 <div>
-  <form method="post">
+  <form method="post", enctype="multipart/form-data">
      <label for="input">Select required categorical features (Press and hold Control key)</label>
      <select name="categorical_features" multiple="" class="ui fluid dropdown">
 <option value="Status_of_existing_checking_account">Status of existing checking account</option>
@@ -41,7 +41,7 @@
      </select>
      <br><br>
      <label for="input">Select classifier</label>
-     <select id="cclassifier" name="cclassifier" class="ui dropdown">
+     <select id="classifier" name="classifier" class="ui dropdown">
         <option value="">Classifier</option>
         <option value="knn">KNeighborsClassifier</option>
         <option value="lr">LogisticRegression</option>
@@ -53,20 +53,18 @@
      </select>
       <label for="input">Target column</label>
      <input type="text" id="target" name="target">
+
+      <input type="file" name="credit_data_file">
       <button type="submit" class="ui button primary">Predict</button>
 
   </form>
-       <!--<form action="/build_model" method="post">-->
-       <!--<input type="submit">-->
-
-   <!--</form>-->
-
-   <!--<form action="/build_model" method="post" enctype="multipart/form-data">-->
-       <!--<input type="text" name="credit_data">-->
-       <!--<input type="file" name="credit_data_file">-->
-       <!--<input type="submit">-->
-
-   <!--</form>-->
+    <br><br>
+      <p>Model: {{ result[0] }}</p>
+    <p>Accuracy: {{ result[1] }}</p>
+    <p>Precision: {{ result[2] }}</p>
+    <p>Recall: {{ result[3] }}</p>
+    <p>F1 score: {{ result[4] }}</p>
+      <br><br>
    </div>
   </div>
 </body>
